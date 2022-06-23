@@ -17,6 +17,7 @@
 		5FD31F47286440730029DD2D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5FD31F46286440730029DD2D /* Assets.xcassets */; };
 		5FD31F4A286440730029DD2D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5FD31F48286440730029DD2D /* LaunchScreen.storyboard */; };
 		5FEFC75328644E60007A2841 /* CollectionViewTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FEFC75228644E60007A2841 /* CollectionViewTableViewCell.swift */; };
+		5FEFC75528647442007A2841 /* HeroHeaderUIView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FEFC75428647442007A2841 /* HeroHeaderUIView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -32,6 +33,7 @@
 		5FD31F49286440730029DD2D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		5FD31F4B286440730029DD2D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		5FEFC75228644E60007A2841 /* CollectionViewTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionViewTableViewCell.swift; sourceTree = "<group>"; };
+		5FEFC75428647442007A2841 /* HeroHeaderUIView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeroHeaderUIView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -95,6 +97,7 @@
 			isa = PBXGroup;
 			children = (
 				5FEFC75228644E60007A2841 /* CollectionViewTableViewCell.swift */,
+				5FEFC75428647442007A2841 /* HeroHeaderUIView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -200,6 +203,7 @@
 				5F756A902864440500D485F9 /* SearchViewController.swift in Sources */,
 				5FD31F42286440720029DD2D /* MainTabBarViewController.swift in Sources */,
 				5FEFC75328644E60007A2841 /* CollectionViewTableViewCell.swift in Sources */,
+				5FEFC75528647442007A2841 /* HeroHeaderUIView.swift in Sources */,
 				5F756A922864442100D485F9 /* DownloadsViewController.swift in Sources */,
 				5FD31F3E286440720029DD2D /* AppDelegate.swift in Sources */,
 				5FD31F40286440720029DD2D /* SceneDelegate.swift in Sources */,
