@@ -7,6 +7,17 @@
 
 import UIKit
 
+enum Sections: Int {
+    case TrendingMovies = 0
+    case TrendingTvs = 1
+    case Popular = 2
+    case Upcoming = 3
+    case TopRated = 4
+    
+}
+
+
+
 class HomeViewController: UIViewController {
     
     let sectionTitles: [String] = ["Tranding Movies", "Trending TV", "Popular", "Upcoming Movies", "Top rated"]
@@ -31,7 +42,6 @@ class HomeViewController: UIViewController {
         let headerView = HeroHeaderUIView(frame: CGRect(x: 0, y: 0, width: view.bounds.width, height: 500))
         homeTable.tableHeaderView = headerView
         
-        fetchData()
         
     }
     
@@ -39,7 +49,7 @@ class HomeViewController: UIViewController {
         var image = UIImage(named: "tmdb")
         image = image?.withRenderingMode(.alwaysOriginal)
         navigationItem.leftBarButtonItem = UIBarButtonItem(image: image, style: .done, target: self, action: nil)
-      
+        
     }
     
     override func viewDidLayoutSubviews() {
@@ -47,32 +57,7 @@ class HomeViewController: UIViewController {
         homeTable.frame = view.bounds
     }
     
-    private func fetchData() {
-        APICaller.shared.getTrendingMovies { results in
-            
-            switch results {
-                
-            case .success(let movies):
-                print(movies)
-                
-            case .failure(let error):
-                print(error)
-            }
-        }
-        
-//        APICaller.shared.getUpcomingMovies { results in
-//
-//            switch results {
-//
-//            case .success(let tvs):
-//                print(tvs)
-//
-//            case .failure(let error):
-//                print(error)
-//            }
-//        }
-        
-    }
+    
     
 }
 
@@ -90,6 +75,67 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: CollectionViewTableViewCell.identifier, for: indexPath) as? CollectionViewTableViewCell else {
             return UITableViewCell()
         }
+        
+        switch indexPath.section {
+            
+        case Sections.TrendingMovies.rawValue:
+            APICaller.shared.getTrendingMovies { result in
+                switch result {
+                    
+                case .success(let titles):
+                    cell.configure(with: titles)
+                case .failure(let error):
+                    print(error.localizedDescription)
+                }
+            }
+            
+            
+            
+        case Sections.TrendingTvs.rawValue:
+            APICaller.shared.getTrendingTvs { result in
+                switch result {
+                case .success(let titles):
+                    cell.configure(with: titles)
+                case .failure(let error):
+                    print(error.localizedDescription)
+                }
+            }
+            
+        case Sections.Popular.rawValue:
+            APICaller.shared.getPopular { result in
+                switch result {
+                case .success(let titles):
+                    cell.configure(with: titles)
+                case .failure(let error):
+                    print(error.localizedDescription)
+                }
+            }
+            
+        case Sections.Upcoming.rawValue:
+            
+            APICaller.shared.getUpcomingMovies { result in
+                switch result {
+                case .success(let titles):
+                    cell.configure(with: titles)
+                case .failure(let error):
+                    print(error.localizedDescription)
+                }
+            }
+            
+        case Sections.TopRated.rawValue:
+            APICaller.shared.getTopRated { result in
+                switch result {
+                case .success(let titles):
+                    cell.configure(with: titles)
+                case .failure(let error):
+                    print(error)
+                }
+            }
+        default:
+            return UITableViewCell()
+            
+        }
+        
         return cell
         
     }
@@ -113,7 +159,7 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         return sectionTitles[section]
-
+        
     }
     
     // При скроле вверх, навигейшн бар скролится всесте с тэйблвью

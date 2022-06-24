@@ -1,5 +1,5 @@
 //
-//  Tv.swift
+//  Title.swift
 //  Polydev
 //
 //  Created by Jafar on 24.06.2022.
@@ -7,14 +7,14 @@
 
 import Foundation
 
-struct TrendingTvResponse: Codable {
-    
-    let results: [Tv]
+struct TrendingTitlesResponse: Codable {
+    let results: [Title]
+
     
 }
 
-
-struct Tv: Codable {
+struct Title: Codable {
+ 
     let id: Int
     let media_type: String?
     let original_name: String?
@@ -24,5 +24,5 @@ struct Tv: Codable {
     let vote_count: Int
     let release_date: String?
     let vote_average: Double
-    
 }
+
