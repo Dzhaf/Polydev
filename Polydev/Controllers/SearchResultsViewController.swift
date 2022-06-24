@@ -10,15 +10,17 @@ import UIKit
 
 
 protocol SearchResultsViewControllerDelegate: AnyObject {
-
+    func searchResultsViewControllerDidTapItem(_ viewModel: TitlePreviewViewModel)
 }
 
 class SearchResultsViewController: UIViewController {
     
    
     public var titles: [Title] = [Title]()
-    
 
+    public weak var delegate: SearchResultsViewControllerDelegate?
+    
+    
     public let searchResultsCollectionView: UICollectionView = {
        
         let layout = UICollectionViewFlowLayout()
@@ -73,13 +75,37 @@ extension SearchResultsViewController: UICollectionViewDelegate, UICollectionVie
     }
     
 
+   
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         collectionView.deselectItem(at: indexPath, animated: true)
-
+        
         let title = titles[indexPath.row]
         let titleName = title.original_title ?? ""
+        guard let releaseDate = title.release_date else {
+            return
+        }
         
-
+        let voteAverage = title.vote_average
+        
+        APICaller.shared.getUpcomingMovies { [weak self] result in
+            switch result {
+            case .success(let titles):
+                
+                DispatchQueue.main.async {
+                    let vc = TitlePreviewViewController()
+                    vc.configure(with: TitlePreviewViewModel(title: titleName, titleOverview: title.overview ?? "", releaseDate: releaseDate, voteAverage: voteAverage))
+                    self?.navigationController?.pushViewController(vc, animated: true)
+                }
+                
+                
+            case .failure(let error):
+                print(error.localizedDescription)
+                
+            }
+        }
+        
+        delegate?.searchResultsViewControllerDidTapItem(TitlePreviewViewModel(title: titleName, titleOverview: title.overview ?? "", releaseDate: releaseDate, voteAverage: voteAverage))
+        
 
     }
     

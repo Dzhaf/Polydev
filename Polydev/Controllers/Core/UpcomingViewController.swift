@@ -8,11 +8,11 @@
 import UIKit
 
 class UpcomingViewController: UIViewController {
-
+    
     private var titles: [Title] = [Title]()
     
     private let upcomingTable: UITableView = {
-       
+        
         let table = UITableView()
         table.register(TitleTableViewCell.self, forCellReuseIdentifier: TitleTableViewCell.identifier)
         return table
@@ -65,7 +65,7 @@ extension UpcomingViewController: UITableViewDelegate, UITableViewDataSource {
     
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-       
+        
         guard let cell = tableView.dequeueReusableCell(withIdentifier: TitleTableViewCell.identifier, for: indexPath) as? TitleTableViewCell else {
             return UITableViewCell()
         }
@@ -80,7 +80,7 @@ extension UpcomingViewController: UITableViewDelegate, UITableViewDataSource {
         return 140
     }
     
-
+    
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         
@@ -90,9 +90,33 @@ extension UpcomingViewController: UITableViewDelegate, UITableViewDataSource {
             return
         }
         
+        guard let releaseDate = title.release_date else {
+            return
+        }
+        
+        let voteAverage = title.vote_average
+        
+        
+        APICaller.shared.getUpcomingMovies { [weak self] result in
+            switch result {
+            case .success(let titles):
+                
+                DispatchQueue.main.async {
+                    let vc = TitlePreviewViewController()
+                    vc.configure(with: TitlePreviewViewModel(title: titleName, titleOverview: title.overview ?? "", releaseDate: releaseDate, voteAverage: voteAverage))
+                    self?.navigationController?.pushViewController(vc, animated: true)
+                }
+                
+                
+            case .failure(let error):
+                print(error.localizedDescription)
+                
+            }
+        }
+        
         
     }
- 
+    
     
 }
 

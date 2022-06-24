@@ -9,12 +9,12 @@ import Foundation
 
 struct TrendingTitlesResponse: Codable {
     let results: [Title]
-
+    
     
 }
 
 struct Title: Codable {
- 
+    
     let id: Int
     let media_type: String?
     let original_name: String?

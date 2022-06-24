@@ -9,10 +9,9 @@ import UIKit
 
 enum Sections: Int {
     case TrendingMovies = 0
-    case TrendingTvs = 1
-    case Popular = 2
-    case Upcoming = 3
-    case TopRated = 4
+    case Popular = 1
+    case Upcoming = 2
+    case TopRated = 3
     
 }
 
@@ -20,7 +19,11 @@ enum Sections: Int {
 
 class HomeViewController: UIViewController {
     
-    let sectionTitles: [String] = ["Tranding Movies", "Trending TV", "Popular", "Upcoming Movies", "Top rated"]
+    private var randomTrendingMovie: Title?
+    private var headerView: HeroHeaderUIView?
+    
+    
+    let sectionTitles: [String] = ["Tranding Movies", "Popular", "Upcoming Movies", "Top rated"]
     
     private let homeTable: UITableView = {
         let table = UITableView(frame: .zero, style: .grouped)
@@ -39,9 +42,30 @@ class HomeViewController: UIViewController {
         
         configureNavBar()
         
-        let headerView = HeroHeaderUIView(frame: CGRect(x: 0, y: 0, width: view.bounds.width, height: 500))
+        headerView = HeroHeaderUIView(frame: CGRect(x: 0, y: 0, width: view.bounds.width, height: 300))
         homeTable.tableHeaderView = headerView
         
+        configureHeroHeaderView()
+        
+        
+    }
+    
+    private func configureHeroHeaderView() {
+        
+        APICaller.shared.getTrendingMovies { [weak self] result in
+            
+            switch result {
+                
+            case .success(let titles):
+                let selectedTitle = titles.randomElement()
+                
+                self?.randomTrendingMovie = selectedTitle
+                self?.headerView?.configure(with: TitleViewModel(titleName: selectedTitle?.original_title ?? "", posterURL: selectedTitle?.poster_path ?? "" ))
+                
+            case.failure(let error):
+                print(error.localizedDescription)
+            }
+        }
         
     }
     
@@ -76,6 +100,8 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
             return UITableViewCell()
         }
         
+        cell.delegate = self
+        
         switch indexPath.section {
             
         case Sections.TrendingMovies.rawValue:
@@ -89,17 +115,6 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
                 }
             }
             
-            
-            
-        case Sections.TrendingTvs.rawValue:
-            APICaller.shared.getTrendingTvs { result in
-                switch result {
-                case .success(let titles):
-                    cell.configure(with: titles)
-                case .failure(let error):
-                    print(error.localizedDescription)
-                }
-            }
             
         case Sections.Popular.rawValue:
             APICaller.shared.getPopular { result in
@@ -152,12 +167,13 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
         guard let header = view as? UITableViewHeaderFooterView else {return}
         header.textLabel?.font = .systemFont(ofSize: 18, weight: .bold)
         header.textLabel?.frame = CGRect(x: header.bounds.origin.x + 20, y: header.bounds.origin.y, width: 100, height: header.bounds.height)
-        header.textLabel?.textColor = .white
+        header.textLabel?.textColor = .label
         header.textLabel?.text = header.textLabel?.text?.capitalizeFirstLetter()
         
     }
     
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        
         return sectionTitles[section]
         
     }
@@ -168,6 +184,22 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
         let offset = scrollView.contentOffset.y + defaultOffset
         
         navigationController?.navigationBar.transform = .init(translationX: 0, y: min(0, -offset))
+    }
+    
+    
+    
+}
+
+extension HomeViewController: CollectionViewTableViewCellDelegate {
+    
+    func collectionViewTableViewCellDidTapCell(_ cell: CollectionViewTableViewCell, viewModel: TitlePreviewViewModel) {
+        
+        DispatchQueue.main.async { [weak self] in
+            let vc = TitlePreviewViewController()
+            vc.configure(with: viewModel)
+            self?.navigationController?.pushViewController(vc, animated: true )
+        }
+        
     }
     
     
