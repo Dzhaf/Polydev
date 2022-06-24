@@ -10,7 +10,7 @@ import UIKit
 class HeroHeaderUIView: UIView {
     
     private let heroImageVeiw: UIImageView = {
-      let imageView = UIImageView()
+        let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFill
         imageView.clipsToBounds = true
         imageView.image = UIImage(named: "heroImage")
@@ -29,11 +29,21 @@ class HeroHeaderUIView: UIView {
         layer.addSublayer(gradientLayer)
         
     }
-
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         addSubview(heroImageVeiw)
         addGradient()
+    }
+    
+    public func configure(with model: TitleViewModel) {
+        
+        guard let url = URL(string: "https://image.tmdb.org/t/p/w500/\(model.posterURL)") else {
+            return
+        }
+        
+        heroImageVeiw.sd_setImage(with: url, completed: nil)
+        
     }
     
     
@@ -47,5 +57,5 @@ class HeroHeaderUIView: UIView {
     required init?(coder: NSCoder) {
         fatalError()
     }
-
+    
 }
